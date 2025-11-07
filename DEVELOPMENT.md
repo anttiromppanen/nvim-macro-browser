@@ -16,7 +16,6 @@
 - Feature to add description for a macro
 - Feature to show saved macros
 - Feature to save a macro
-- Fix bug where macro highlighting doesn't work before a macro is used
 - README.md documentation
 - :help documentation
 - Tab toggle between macros / registers (currently only macros -> registers)

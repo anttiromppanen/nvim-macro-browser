@@ -57,17 +57,16 @@ function M.show(opts)
 	opts = opts or {}
 	local macros = get_macros(opts)
 
-	if #macros == 0 then
-		vim.notify("No macros recorded", vim.log.levels.INFO)
-		return
-	end
-
 	state.buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[state.buf].bufhidden = "wipe"
 	vim.bo[state.buf].buftype = "nofile"
 
 	local heading = Utils.text_with_left_padding(Constants.text_prompts.show_macros, "")
 	local lines = { heading, "" }
+
+	if #macros == 0 then
+		lines[#lines + 1] = "No recorded macros found."
+	end
 
 	for _, m in ipairs(macros) do
 		lines[#lines + 1] = string.format("  %s → %s", m.name, m.value)
@@ -102,19 +101,31 @@ function M.show(opts)
 		width = math.max(width, vim.fn.strdisplaywidth(line))
 	end
 
+	-- Popup Layout Calculations
+	local content_width = width
+	local content_height = #lines
+
+	local window_width = math.min(
+		content_width + Constants.window_settings.padding_horizontal,
+		vim.o.columns - Constants.window_settings.min_screen_margin
+	)
+	local window_height =
+		math.min(content_height + Constants.window_settings.padding_vertical, Constants.window_settings.max_height)
+	local row_position = Constants.window_settings.row_position
+	local col_position = vim.o.columns - (window_width + Constants.window_settings.window_right_offset)
+
+	-- Window options
 	local opts_win = {
 		relative = Constants.window_settings.relative,
-		width = math.min(width + 4, vim.o.columns - 10),
-		height = math.min(#lines + 2, 15),
-		row = 2,
-		col = vim.o.columns - math.min(width + 6, vim.o.columns - 4),
+		width = window_width,
+		height = window_height,
+		row = row_position,
+		col = col_position,
 		style = Constants.window_settings.border_style,
 		border = Constants.window_settings.border,
-		noautocmd = true,
+		noautocmd = Constants.window_settings.noautocmd,
 	}
 
-	-- state.win = vim.api.nvim_open_win(state.buf, true, opts_win)
-	-- possible fix for precognition
 	state.win = vim.api.nvim_open_win(
 		state.buf,
 		false,
@@ -169,6 +180,7 @@ function M.prompt_and_run()
 			M.close()
 			return
 		end
+
 		char = vim.fn.nr2char(char_nr2)
 	end
 
