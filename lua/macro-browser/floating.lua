@@ -20,15 +20,21 @@ function M.show(reg)
 
 	vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, { text })
 
+	-- Popup Layout Calculations
+	local window_width = #text + Constants.window_settings.padding_horizontal
+	local window_height = 1 -- Single-line popup
+	local col_position = vim.o.columns - (window_width + Constants.window_settings.window_right_offset)
+
+	-- Window options
 	local opts = {
 		relative = Constants.window_settings.relative,
-		width = #text + 4,
-		height = 1,
-		row = 1,
-		col = vim.o.columns - (#text + 6),
+		width = window_width,
+		height = window_height,
+		row = Constants.window_settings.row_position,
+		col = col_position,
 		style = Constants.window_settings.border_style,
 		border = Constants.window_settings.border,
-		noautocmd = true,
+		noautocmd = Constants.window_settings.noautocmd,
 	}
 
 	-- state.win = vim.api.nvim_open_win(state.buf, false, opts)

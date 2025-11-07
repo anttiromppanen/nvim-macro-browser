@@ -2,11 +2,21 @@ local C = {}
 
 -- Window settings
 C.window_settings = {
+	-- Window style
 	relative = "editor",
-	left_padding = 2,
+	heading_left_padding = 2,
 	border_style = "minimal",
 	border = "rounded",
 	winblend = 10,
+	noautocmd = true,
+
+	-- Window position and size
+	padding_horizontal = 4,
+	padding_vertical = 2,
+	max_height = 15,
+	window_right_offset = 6,
+	min_screen_margin = 10,
+	row_position = 2,
 }
 
 -- Text prompts for window / notifies

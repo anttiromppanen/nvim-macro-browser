@@ -1,4 +1,5 @@
 local Constants = require("macro-browser.constants")
+local Utils = require("macro-browser.utils")
 local M = {}
 
 -- Store window and buffer references
@@ -65,7 +66,7 @@ function M.show(opts)
 	vim.bo[state.buf].bufhidden = "wipe"
 	vim.bo[state.buf].buftype = "nofile"
 
-	local heading = string.rep(" ", Constants.window_settings.left_padding) .. "🟢 Macros:"
+	local heading = Utils.text_with_left_padding(Constants.text_prompts.show_macros, "")
 	local lines = { heading, "" }
 
 	for _, m in ipairs(macros) do
@@ -102,13 +103,13 @@ function M.show(opts)
 	end
 
 	local opts_win = {
-		relative = "editor",
+		relative = Constants.window_settings.relative,
 		width = math.min(width + 4, vim.o.columns - 10),
 		height = math.min(#lines + 2, 15),
 		row = 2,
 		col = vim.o.columns - math.min(width + 6, vim.o.columns - 4),
-		style = "minimal",
-		border = "rounded",
+		style = Constants.window_settings.border_style,
+		border = Constants.window_settings.border,
 		noautocmd = true,
 	}
 
