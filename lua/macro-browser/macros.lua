@@ -65,7 +65,7 @@ function M.show(opts)
 	vim.bo[state.buf].bufhidden = "wipe"
 	vim.bo[state.buf].buftype = "nofile"
 
-	local heading = string.rep(" ", Constants.left_padding) .. "🟢 Macros:"
+	local heading = string.rep(" ", Constants.window_settings.left_padding) .. "🟢 Macros:"
 	local lines = { heading, "" }
 
 	for _, m in ipairs(macros) do
@@ -178,7 +178,7 @@ function M.prompt_and_run()
 		return
 	end
 
-	if not char:match("^[a-z0-9]$") then
+	if not char:match(Constants.register_matcher_regex) then
 		vim.notify("Invalid macro register: " .. char, vim.log.levels.WARN)
 		return
 	end

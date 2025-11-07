@@ -1,5 +1,6 @@
 local M = {}
-local C = require("macro-browser.constants")
+local Constants = require("macro-browser.constants")
+local Utils = require("macro-browser.utils")
 
 -- Store window and buffer references
 local state = {
@@ -15,17 +16,18 @@ function M.show(reg)
 	state.buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[state.buf].bufhidden = "wipe"
 
-	local text = string.rep(" ", C.left_padding) .. "🔴 Recording @" .. reg
+	local text = Utils.text_with_left_padding(Constants.text_prompts.recording, reg)
+
 	vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, { text })
 
 	local opts = {
-		relative = "editor",
+		relative = Constants.window_settings.relative,
 		width = #text + 4,
 		height = 1,
 		row = 1,
 		col = vim.o.columns - (#text + 6),
-		style = C.border_style,
-		border = C.border,
+		style = Constants.window_settings.border_style,
+		border = Constants.window_settings.border,
 		noautocmd = true,
 	}
 
@@ -42,7 +44,7 @@ function M.show(reg)
 
 	-- Use pcall in case window creation failed
 	if state.win and vim.api.nvim_win_is_valid(state.win) then
-		pcall(vim.api.nvim_set_option_value, "winblend", C.winblend, { win = state.win })
+		pcall(vim.api.nvim_set_option_value, "winblend", Constants.window_settings.winblend, { win = state.win })
 	end
 end
 
